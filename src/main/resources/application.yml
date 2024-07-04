@@ -1,7 +1,7 @@
 spring:
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://db:3306/mydatabase?useSSL=false&useUnicode=true&serverTimezone=Asia/Seoul
+    url: jdbc:mysql://db:3306/mydatabase?useSSL=false&useUnicode=true&serverTimezone=Asia/Seoul&allowPublicKeyRetrieval=true
     username: username
     password: password
   jpa:
@@ -11,6 +11,7 @@ spring:
     properties:
       hibernate:
         format_sql: true
+
 
 docker:
   compose:
