@@ -24,12 +24,13 @@ services:
       SPRING_DATASOURCE_USERNAME: username
       SPRING_DATASOURCE_PASSWORD: password
       SPRING_JPA_HIBERNATE_DDL_AUTO: update
+      JWT_SECRET: your_jwt_secret_key_here  # 추가된 환경 변수
+      JWT_EXPIRATION: 3600000  # 추가된 환경 변수 (예: 1시간)
     ports:
       - "8080:8080"
     networks:
       - mynetwork
     restart: on-failure
-    entrypoint: ["sh", "-c", "while ! nc -z db 3306; do sleep 1; done; java -jar /app/app.jar"]
 
 networks:
   mynetwork:

@@ -20,11 +20,14 @@ RUN ./gradlew build --no-daemon
 # Use a base image with only Java to run the application
 FROM openjdk:17-jdk-slim
 
+# Install netcat (nc)
+RUN apt-get update && apt-get install -y netcat
+
 # Set the working directory
 WORKDIR /app
 
 # Copy the built jar file from the build stage
-COPY --from=build /app/build/libs/*.jar app.jar
+COPY --from=build /app/build/libs/*.jar /app/app.jar
 
 # Run the application
-ENTRYPOINT ["java", "-jar", "app.jar"]
+ENTRYPOINT ["sh", "-c", "while ! nc -z db 3306; do sleep 1; done; java -jar /app/app.jar"]
