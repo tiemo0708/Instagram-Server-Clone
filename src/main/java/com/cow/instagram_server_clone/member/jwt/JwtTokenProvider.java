@@ -52,6 +52,15 @@ public class JwtTokenProvider {
                 .compact();
     }
 
+    public String createToken(Authentication authentication) {
+        String username = authentication.getName();
+        Set<Authority> authorities = authentication.getAuthorities().stream()
+                .map(grantedAuthority -> new Authority(grantedAuthority.getAuthority()))
+                .collect(Collectors.toSet());
+
+        return createToken(username, authorities);
+    }
+
     public Authentication getAuthentication(String token) {
         User userDetails = (User) userDetailsService.loadUserByUsername(getUsername(token));
         return new UsernamePasswordAuthenticationToken(userDetails, "", userDetails.getAuthorities());

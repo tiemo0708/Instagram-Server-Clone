@@ -1,15 +1,13 @@
 package com.cow.instagram_server_clone.member.dto.request;
 
-import lombok.*;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Getter
-@Setter
 @NoArgsConstructor
-@AllArgsConstructor
-@Builder
 public class MemberRequestDto {
-    private String email;
     private String username;
-    private String name;
     private String password;
+    private String email;
+    private String name;
 }

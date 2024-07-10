@@ -1,8 +1,8 @@
 version: '3.8'
-
 services:
   db:
-    image: mysql:8.0.37
+    image: mysql:8.0.31
+    container_name: instagram-server-clone-db
     environment:
       MYSQL_ROOT_PASSWORD: password
       MYSQL_DATABASE: mydatabase
@@ -14,23 +14,20 @@ services:
       - mynetwork
 
   spring_boot_app:
-    build:
-      context: .
-      dockerfile: Dockerfile
-    depends_on:
-      - db
+    image: instagram-server-clone-spring_boot_app  # 실제 이미지 이름으로 교체
     environment:
-      SPRING_DATASOURCE_URL: jdbc:mysql://db:3306/mydatabase
+      SPRING_DATASOURCE_URL: jdbc:mysql://instagram-server-clone-db:3306/mydatabase
       SPRING_DATASOURCE_USERNAME: username
       SPRING_DATASOURCE_PASSWORD: password
-      SPRING_JPA_HIBERNATE_DDL_AUTO: update
-      JWT_SECRET: your_jwt_secret_key_here  # 추가된 환경 변수
-      JWT_EXPIRATION: 3600000  # 추가된 환경 변수 (예: 1시간)
+      JWT_SECRET: your_jwt_secret  # JWT_SECRET 환경 변수 추가
+      JWT_EXPIRATION: 3600000  # JWT_EXPIRATION 환경 변수를 밀리초 단위의 숫자로 설정
+    depends_on:
+      - db
     ports:
       - "8080:8080"
     networks:
       - mynetwork
-    restart: on-failure
 
 networks:
   mynetwork:
+    driver: bridge

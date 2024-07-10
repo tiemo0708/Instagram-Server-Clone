@@ -3,6 +3,7 @@ package com.cow.instagram_server_clone.member.service;
 import com.cow.instagram_server_clone.member.entity.Member;
 import com.cow.instagram_server_clone.member.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -11,6 +12,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.stream.Collectors;
 
+// CustomUserDetailsService.java
 @Service
 @RequiredArgsConstructor
 public class CustomUserDetailsService implements UserDetailsService {
@@ -25,7 +27,9 @@ public class CustomUserDetailsService implements UserDetailsService {
         return User.builder()
                 .username(member.getUsername())
                 .password(member.getPassword())
-                .authorities(member.getAuthorities().stream().collect(Collectors.toSet()))
+                .authorities(member.getAuthorities().stream()
+                        .map(authority -> new SimpleGrantedAuthority(authority.getName()))
+                        .collect(Collectors.toSet()))
                 .build();
     }
 }

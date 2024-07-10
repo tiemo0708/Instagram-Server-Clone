@@ -1,9 +1,13 @@
 package com.cow.instagram_server_clone.member.entity;
 
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.NoArgsConstructor;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 
-
+import java.util.HashSet;
 import java.util.Set;
 
 @Entity
@@ -19,15 +23,16 @@ public class Member {
     private Long id;
 
     private String email;
-    private String username;
     private String name;
     private String password;
+    private String username;
+    private boolean activated;
 
-    @ManyToMany(fetch = FetchType.EAGER)
+    @ManyToMany
     @JoinTable(
             name = "member_authority",
             joinColumns = @JoinColumn(name = "member_id"),
             inverseJoinColumns = @JoinColumn(name = "authority_name")
     )
-    private Set<Authority> authorities;
+    private Set<Authority> authorities = new HashSet<>();
 }
