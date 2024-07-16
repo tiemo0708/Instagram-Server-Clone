@@ -7,13 +7,14 @@ LABEL maintainer="your-email@example.com"
 # Add a volume pointing to /tmp
 VOLUME /tmp
 
-# Copy the build.gradle file and the gradle wrapper
-COPY build.gradle .
-COPY settings.gradle .
-COPY gradlew .
+# Set the working directory
+WORKDIR /app
+
+# Copy only the files necessary for the build first
+COPY build.gradle settings.gradle gradlew ./
 COPY gradle ./gradle
 
-# Copy the project files
+# Copy the source code
 COPY src ./src
 
 # Run the gradle build to create the executable JAR
@@ -26,4 +27,4 @@ COPY build/libs/Instagram-Server-Clone-0.0.1-SNAPSHOT.jar app.jar
 EXPOSE 8080
 
 # Set the startup command to run your JAR
-CMD ["java", "-jar", "app.jar"]
+CMD ["java", "-jar", "/app/app.jar"]
