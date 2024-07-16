@@ -1,30 +1,16 @@
 spring:
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://instagram-server-clone-db-1:3307/mydatabase?useSSL=false&useUnicode=true&serverTimezone=Asia/Seoul&allowPublicKeyRetrieval=true
+    url: jdbc:mysql://db:3306/mydatabase?useSSL=false&useUnicode=true&serverTimezone=Asia/Seoul
     username: username
     password: password
-  sql:
-    init:
-      mode: always # 데이터베이스 초기화 모드 설정
-      platform: mysql
-      schema-locations: classpath:schema.sql
-      data-locations: classpath:data.sql
   jpa:
     show-sql: true
     hibernate:
-      ddl-auto: update
+      ddl-auto: create
     properties:
       hibernate:
-        show_sql: true
         format_sql: true
-        dialect: org.hibernate.dialect.MySQL8Dialect
-    data:
-      data: classpath:data.sql
-
-jwt:
-  secret: ${JWT_SECRET}
-  expiration: ${JWT_EXPIRATION}
 
 docker:
   compose:
@@ -44,8 +30,3 @@ logging:
         type:
           descriptor:
             sql: trace
-
-security:
-  user:
-    name: user
-    password: password

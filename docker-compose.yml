@@ -1,8 +1,9 @@
 version: '3.8'
+
 services:
   db:
-    image: mysql:8.0.31
-    container_name: instagram-server-clone-db
+    image: mysql:8.0
+    container_name: mysql
     environment:
       MYSQL_ROOT_PASSWORD: password
       MYSQL_DATABASE: mydatabase
@@ -10,24 +11,20 @@ services:
       MYSQL_PASSWORD: password
     ports:
       - "3307:3306"
-    networks:
-      - mynetwork
+    volumes:
+      - db_data:/var/lib/mysql
 
-  spring_boot_app:
-    image: instagram-server-clone-spring_boot_app  # 실제 이미지 이름으로 교체
-    environment:
-      SPRING_DATASOURCE_URL: jdbc:mysql://instagram-server-clone-db:3306/mydatabase
-      SPRING_DATASOURCE_USERNAME: username
-      SPRING_DATASOURCE_PASSWORD: password
-      JWT_SECRET: your_jwt_secret  # JWT_SECRET 환경 변수 추가
-      JWT_EXPIRATION: 3600000  # JWT_EXPIRATION 환경 변수를 밀리초 단위의 숫자로 설정
+  app:
+    build: .
+    container_name: spring_boot_app
     depends_on:
       - db
     ports:
-      - "8080:8080"
-    networks:
-      - mynetwork
+      - "8081:8080"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://db:3306/mydatabase?useSSL=false&useUnicode=true&serverTimezone=Asia/Seoul
+      SPRING_DATASOURCE_USERNAME: username
+      SPRING_DATASOURCE_PASSWORD: password
 
-networks:
-  mynetwork:
-    driver: bridge
+volumes:
+  db_data:

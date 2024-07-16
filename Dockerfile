@@ -1,33 +1,29 @@
-# Use a base image with Java and Gradle
-FROM gradle:7.3.3-jdk17 AS build
+# Start with a base image containing Java runtime
+FROM openjdk:17-jdk-alpine
 
-# Set the working directory
-WORKDIR /app
+# Add Maintainer Info
+LABEL maintainer="your-email@example.com"
 
-# Copy the Gradle wrapper and the build.gradle file
-COPY gradlew .
+# Add a volume pointing to /tmp
+VOLUME /tmp
+
+# Copy the build.gradle file and the gradle wrapper
 COPY build.gradle .
 COPY settings.gradle .
+COPY gradlew .
 COPY gradle ./gradle
 
-# Download dependencies
-RUN ./gradlew build --no-daemon || return 0
-
-# Copy the source code and build the application
+# Copy the project files
 COPY src ./src
+
+# Run the gradle build to create the executable JAR
 RUN ./gradlew build --no-daemon
 
-# Use a base image with only Java to run the application
-FROM openjdk:17-jdk-slim
+# Copy the generated JAR file to the root of the container
+COPY build/libs/Instagram-Server-Clone-0.0.1-SNAPSHOT.jar app.jar
 
-# Install netcat (nc)
-RUN apt-get update && apt-get install -y netcat
+# Expose the port the app runs on
+EXPOSE 8080
 
-# Set the working directory
-WORKDIR /app
-
-# Copy the built jar file from the build stage
-COPY --from=build /app/build/libs/*.jar /app/app.jar
-
-# Run the application
-ENTRYPOINT ["sh", "-c", "while ! nc -z db 3306; do sleep 1; done; java -jar /app/app.jar"]
+# Set the startup command to run your JAR
+CMD ["java", "-jar", "app.jar"]
